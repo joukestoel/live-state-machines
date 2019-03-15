@@ -2,7 +2,8 @@ module NxstTranslator
 
 import StateMachine;
 import Parser;
-//import lang::nextstep::Syntax;
+import lang::nextstep::Syntax;
+import lang::nextstep::InstanceSyntax;
 import lang::nextstep::OutputSyntax;
 import Pipeline;
 
@@ -25,8 +26,9 @@ bool canParseSpec(str spec) {
 }
 
 RuntimeModel getNextRuntimeModel(str nxstpSpec, Controller oldCtl, Controller newCtl, RuntimeModel currentRuntime) {
-  Spec spc = sm2nxstpModel(nxstpSpec, oldCtl, newCtl, currentRuntime);
-  OutputDef rawNewRuntime = runAndGetNextModel(spc);
+  Spec spc = sm2nxstpModel(nxstpSpec);
+  NextepInstance inst = sm2nxstpInst(oldCtl, newCtl, currentRuntime);
+  OutputDef rawNewRuntime = runAndGetNextModel(spc, inst[@\loc = spc@\loc]);
   
   println(rawNewRuntime);
   RuntimeModel newRuntime = nxstp2smModel(rawNewRuntime);
@@ -34,6 +36,9 @@ RuntimeModel getNextRuntimeModel(str nxstpSpec, Controller oldCtl, Controller ne
   
   return newRuntime;
 }
+
+NextepInstance sm2nxstpInst(Controller oldCtl, Controller newCtl, RuntimeModel currentRuntime) 
+  = parseInstanceString(sm2nxstpInstance(oldCtl, newCtl, currentRuntime));
 
 RuntimeModel nxstp2smModel(OutputDef rawModel) {
   str getCurrentState() = "<state>" when ObjectDef obj <- rawModel.newRuntime, "<obj.\type>" == "Runtime", /(FieldInstantiation)`current = <Atom state>` := obj.fields;
@@ -51,13 +56,8 @@ RuntimeModel nxstp2smModel(OutputDef rawModel) {
   return <currentState, visitCount>;
 }
 
-Spec sm2nxstpModel(nxstpSpec, Controller oldCtl, Controller newCtl, RuntimeModel currentRuntime) { 
-   str spc = "<nxstpSpec>
-             '<sm2nxstpInstance(oldCtl, newCtl, currentRuntime)>";
-   
-   println(spc);
-   return parseString(spc);
-}
+@memo
+Spec sm2nxstpModel(nxstpSpec) = parseString(nxstpSpec);
 
 str nxstpStaticModel() =
   "static {
