@@ -13,6 +13,7 @@ import salix::HTML;
 import salix::Node;
 import salix::Core;
 import salix::lib::CodeMirror;
+import salix::lib::Mode;
 import salix::lib::XTerm;
 import salix::lib::Mode;
 import salix::lib::UML;
@@ -28,9 +29,10 @@ import StateMachine;
 import NxstTranslator;
 //import lang::nextstep::Syntax;
 
-App[IDEModel] ideApp() 
-  = app(ideInit, ideView, ideUpdate, 
-        |http://localhost:8001/salix/demo/ide/index.html|, |project://salix/src|, parser = parseMsg); 
+SalixApp[IDEModel] liveSMApp(str id = "live-state-machines") = makeApp(id, ideInit, ideView, ideUpdate, parser = parseMsg);
+
+App[IDEModel] liveSMWebApp() 
+  = webApp(liveSMApp(), |project://live-state-machines/src/index.html|, |project://live-state-machines/src|); 
 
 alias IDEModel = tuple[
   str src, 

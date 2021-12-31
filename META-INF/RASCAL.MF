@@ -2,5 +2,7 @@ Manifest-Version: 0.0.1
 Source: src
 Main-Module: Plugin
 Main-Function: main
+Project-Name: live-state-machines
+Require-Libraries: |lib://nextstep|, |lib://allealle|, |lib://salix|, |lib://rascal_eclipse|
 Courses: courses
 

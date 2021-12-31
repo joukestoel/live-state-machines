@@ -3,5 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: live_state_machines
 Bundle-SymbolicName: live_state_machines
 Bundle-Version: 1.0.0
-Require-Bundle: rascal_eclipse
+Require-Bundle: rascal_eclipse, allealle, salix
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
